@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Álbum da Copa 2026 — Figurinhas à venda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch:#0b3d2e;
+    --pitch-deep:#082a20;
+    --paper:#f4ead2;
+    --paper-dim:#ece0c2;
+    --foil:#d4af37;
+    --foil-light:#f1d989;
+    --ink:#16130f;
+    --red:#c1272d;
+    --line: rgba(22,19,15,0.16);
+    --line-light: rgba(244,234,210,0.25);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Anton', sans-serif; letter-spacing:0.5px;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:sticky; top:0; z-index:40;
+    background:var(--pitch);
+    color:var(--paper);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px;
+    border-bottom:3px solid var(--foil);
+  }
+  .nav-logo{display:flex; align-items:center; gap:10px;}
+  .nav-logo .ball{font-size:22px;}
+  .nav-logo span{font-family:'Anton'; font-size:18px; letter-spacing:0.5px;}
+  .cart-btn{
+    background:var(--foil); color:var(--pitch-deep); border:none;
+    padding:9px 14px; border-radius:6px; font-weight:700; font-size:14px;
+    display:flex; align-items:center; gap:8px; cursor:pointer;
+    font-family:'Work Sans';
+    transition:transform .15s ease;
+  }
+  .cart-btn:hover{transform:translateY(-1px);}
+  .cart-count{
+    background:var(--red); color:#fff; border-radius:50%;
+    min-width:20px; height:20px; font-size:12px; display:flex; align-items:center; justify-content:center;
+    padding:0 4px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse at top, rgba(212,175,55,0.10), transparent 60%),
+      repeating-linear-gradient(90deg, rgba(244,234,210,0.035) 0 2px, transparent 2px 90px),
+      var(--pitch);
+    color:var(--paper);
+    padding:56px 20px 70px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero h1{
+    font-size:clamp(38px, 8vw, 78px);
+    margin:0 0 6px;
+    line-height:0.95;
+    background:linear-gradient(100deg, var(--foil-light), var(--foil) 40%, var(--foil-light) 60%, var(--foil));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    background-size:200% auto;
+    animation:shine 5s linear infinite;
+  }
+  @keyframes shine{ to{ background-position:200% center; } }
+  .hero p.sub{
+    max-width:520px; margin:0 auto 34px; font-size:16px; opacity:0.85; line-height:1.5;
+  }
+
+  /* pack opening signature element */
+  .pack-wrap{
+    display:flex; flex-direction:column; align-items:center; gap:18px;
+  }
+  .pack{
+    width:150px; height:210px; position:relative; cursor:pointer;
+    perspective:600px;
+  }
+  .pack-face{
+    position:absolute; inset:0; border-radius:10px;
+    background:
+      linear-gradient(135deg, #f1d989 0%, #d4af37 22%, #8a6d1c 38%, #f1d989 52%, #b98f22 68%, #f1d989 85%, #d4af37 100%);
+    background-size:250% 250%;
+    box-shadow:0 18px 40px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(255,255,255,0.25);
+    animation: foilshift 4s ease-in-out infinite;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition: clip-path .6s cubic-bezier(.6,0,.3,1), opacity .5s ease .1s, transform .6s ease;
+    color:var(--pitch-deep);
+  }
+  @keyframes foilshift{
+    0%,100%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+  }
+  .pack-face::before{
+    content:'';
+    position:absolute; top:8px; left:8px; right:8px; bottom:8px;
+    border:2px dashed rgba(11,61,46,0.35);
+    border-radius:6px;
+    pointer-events:none;
+  }
+  .pack-face .p-title{font-family:'Anton'; font-size:15px; letter-spacing:1px;}
+  .pack-face .p-sub{font-size:10px; margin-top:4px; font-weight:600; letter-spacing:1px; text-transform:uppercase;}
+  .pack-face .p-num{font-family:'JetBrains Mono'; font-size:11px; margin-top:10px; opacity:0.7;}
+  .pack:not(.opened):hover .pack-face{ transform: rotate(-2deg) scale(1.02); }
+  .pack.opened .pack-face{
+    clip-path: polygon(0 0, 100% 0, 100% 38%, 55% 46%, 100% 54%, 100% 100%, 0 100%);
+    opacity:0;
+  }
+  .sticker-fly{
+    position:absolute; width:54px; height:76px; border-radius:6px;
+    top:40%; left:50%;
+    background:var(--paper);
+    border:2px dashed rgba(11,61,46,0.4);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono'; font-weight:700; font-size:11px; color:var(--pitch);
+    opacity:0; pointer-events:none;
+  }
+  .pack.opened .sticker-fly{ animation: fly 1s cubic-bezier(.2,.7,.3,1) forwards; }
+  .pack.opened .sf1{ animation-delay:.05s; }
+  .pack.opened .sf2{ animation-delay:.15s; }
+  .pack.opened .sf3{ animation-delay:.25s; }
+  @keyframes fly{
+    0%{ opacity:0; transform:translate(-50%,-50%) scale(0.3) rotate(0deg); }
+    15%{ opacity:1; }
+    100%{ opacity:1; transform:translate(calc(-50% + var(--fx))) translateY(calc(-50% + var(--fy))) scale(1) rotate(var(--fr)); }
+  }
+  .sf1{ --fx:-90px; --fy:-70px; --fr:-14deg; background:linear-gradient(135deg,var(--foil-light),var(--foil)); }
+  .sf2{ --fx:10px; --fy:-95px; --fr:6deg; }
+  .sf3{ --fx:100px; --fy:-55px; --fr:16deg; border-color:var(--red); }
+
+  .pack-hint{ font-size:12px; letter-spacing:1px; text-transform:uppercase; opacity:0.65; font-weight:600; }
+  .cta-scroll{
+    margin-top:6px;
+    background:transparent; color:var(--paper); border:1.5px solid rgba(244,234,210,0.4);
+    padding:11px 22px; border-radius:30px; font-size:14px; font-weight:600; cursor:pointer;
+    transition:all .2s ease;
+  }
+  .cta-scroll:hover{ background:var(--paper); color:var(--pitch); border-color:var(--paper); }
+
+  /* ---------- TABS ---------- */
+  .tabs-bar{
+    position:sticky; top:57px; z-index:30;
+    background:var(--paper); border-bottom:1px solid var(--line);
+    display:flex; gap:6px; padding:12px 20px; overflow-x:auto;
+  }
+  .tab-btn{
+    background:transparent; border:1.5px solid var(--line); color:var(--ink);
+    padding:8px 16px; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer;
+    white-space:nowrap; transition:all .15s ease; font-family:'Work Sans';
+  }
+  .tab-btn.active{ background:var(--pitch); color:var(--paper); border-color:var(--pitch); }
+
+  /* ---------- ALBUM ---------- */
+  .album{ max-width:980px; margin:0 auto; padding:30px 20px 90px; }
+  .section-title{
+    font-family:'Anton'; font-size:26px; margin:6px 0 20px; color:var(--pitch);
+  }
+  .country-block{ margin-bottom:26px; }
+  .country-head{
+    display:flex; align-items:center; gap:10px; margin-bottom:10px;
+  }
+  .country-code{
+    font-family:'Anton'; font-size:15px; background:var(--pitch); color:var(--paper);
+    padding:3px 10px; border-radius:4px; letter-spacing:1px;
+  }
+  .country-line{ flex:1; height:1px; background:var(--line); }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:10px; }
+
+  .chip{
+    position:relative;
+    width:74px; height:96px;
+    background:#fffdf7;
+    border:2px dashed rgba(11,61,46,0.35);
+    border-radius:8px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    cursor:pointer; user-select:none;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .chip:hover{ transform:translateY(-3px); box-shadow:0 6px 14px rgba(11,61,46,0.15); border-color:var(--pitch); }
+  .chip .c-code{ font-family:'Anton'; font-size:12px; color:var(--pitch); letter-spacing:0.5px; }
+  .chip .c-num{ font-family:'JetBrains Mono'; font-weight:700; font-size:20px; margin-top:2px; color:var(--ink); }
+  .chip .c-max{ font-size:9px; margin-top:4px; opacity:0.5; font-weight:600; }
+  .chip.selected{ border-style:solid; border-color:var(--red); background:#fff3e9; }
+  .chip .sel-badge{
+    position:absolute; top:-8px; right:-8px; background:var(--red); color:#fff;
+    width:22px; height:22px; border-radius:50%; font-size:12px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transform:scale(0.5); transition:all .15s ease;
+  }
+  .chip.selected .sel-badge{ opacity:1; transform:scale(1); }
+
+  /* gold / fwc shimmer chips */
+  .chip.gold{
+    background:linear-gradient(120deg, var(--foil-light), var(--foil) 30%, #fff7df 50%, var(--foil) 70%, var(--foil-light));
+    background-size:250% 250%;
+    animation:foilshift 4.5s ease-in-out infinite;
+    border-color:rgba(11,61,46,0.5);
+  }
+  .chip.gold .c-code, .chip.gold .c-num{ color:var(--pitch-deep); }
+  .chip.gold.selected{ border-color:var(--red); box-shadow:0 0 0 2px var(--red) inset; }
+
+  .chip.coca{
+    width:auto; min-width:150px; height:96px; flex-direction:row; gap:10px; padding:0 14px;
+    background:linear-gradient(135deg,#c1272d,#8f1a1f);
+    border:2px solid #8f1a1f;
+  }
+  .chip.coca .coca-icon{ font-size:26px; }
+  .chip.coca .coca-text{ display:flex; flex-direction:column; align-items:flex-start; }
+  .chip.coca .c-code{ color:#fff; }
+  .chip.coca .c-name{ color:#ffe9c7; font-size:12px; font-weight:600; max-width:100px; line-height:1.2; }
+  .chip.coca.selected{ border-color:var(--foil); box-shadow:0 0 0 2px var(--foil) inset; }
+
+  .fwc-block{ display:flex; justify-content:center; padding:10px 0 20px; }
+  .fwc-block .chip{ width:110px; height:140px; }
+  .fwc-block .c-num{ font-size:30px; }
+
+  .empty-note{ font-size:13px; opacity:0.6; padding:20px 0; text-align:center; }
+
+  /* ---------- CART DRAWER ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(11,61,46,0.4); z-index:49;
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  .overlay.show{ opacity:1; pointer-events:auto; }
+  .drawer{
+    position:fixed; top:0; right:0; height:100%; width:min(380px, 92vw);
+    background:var(--paper); z-index:50; box-shadow:-8px 0 30px rgba(0,0,0,0.25);
+    transform:translateX(100%); transition:transform .3s cubic-bezier(.4,0,.2,1);
+    display:flex; flex-direction:column;
+  }
+  .drawer.show{ transform:translateX(0); }
+  .drawer-head{
+    padding:18px 20px; background:var(--pitch); color:var(--paper);
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:3px solid var(--foil);
+  }
+  .drawer-head h3{ margin:0; font-family:'Anton'; font-size:18px; letter-spacing:0.5px; }
+  .close-btn{ background:none; border:none; color:var(--paper); font-size:22px; cursor:pointer; line-height:1; }
+  .drawer-body{ flex:1; overflow-y:auto; padding:14px 20px; }
+  .cart-item{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:10px 0; border-bottom:1px solid var(--line);
+  }
+  .cart-item .ci-info{ display:flex; flex-direction:column; }
+  .cart-item .ci-label{ font-family:'JetBrains Mono'; font-weight:700; font-size:14px; }
+  .cart-item .ci-tag{ font-size:11px; opacity:0.6; text-transform:uppercase; letter-spacing:0.5px; }
+  .ci-controls{ display:flex; align-items:center; gap:8px; }
+  .ci-btn{
+    width:26px; height:26px; border-radius:50%; border:1.5px solid var(--line); background:#fff;
+    cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; line-height:1;
+  }
+  .ci-qty{ font-family:'JetBrains Mono'; font-weight:700; min-width:16px; text-align:center; }
+  .cart-empty{ text-align:center; padding:50px 10px; opacity:0.6; font-size:14px; }
+  .drawer-foot{ padding:16px 20px 20px; border-top:1px solid var(--line); }
+  .foot-row{ display:flex; justify-content:space-between; font-size:14px; margin-bottom:12px; }
+  .foot-row b{ font-family:'JetBrains Mono'; }
+  .whats-btn{
+    width:100%; background:#25D366; color:#053b16; border:none; padding:13px;
+    border-radius:8px; font-weight:700; font-size:14px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:transform .15s ease;
+  }
+  .whats-btn:hover{ transform:translateY(-1px); }
+  .whats-btn:disabled{ opacity:0.4; cursor:not-allowed; transform:none; }
+  .drawer-note{ font-size:11px; opacity:0.55; text-align:center; margin-top:10px; line-height:1.4; }
+
+  footer{
+    text-align:center; padding:26px 20px 40px; font-size:12px; opacity:0.55;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hero h1, .pack-face, .chip.gold{ animation:none !important; }
+    .pack.opened .sticker-fly{ animation:none !important; opacity:0; }
+    html{ scroll-behavior:auto; }
+  }
+
+  @media (max-width:480px){
+    .chip{ width:64px; height:86px; }
+    .chip .c-num{ font-size:17px; }
+    .section-title{ font-size:22px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo"><span class="ball">⚽</span><span>ÁLBUM DA COPA 2026</span></div>
+  <button class="cart-btn" id="openCartBtn">🛒 Carrinho <span class="cart-count" id="cartCount">0</span></button>
+</nav>
+
+<section class="hero">
+  <h1 class="display">FIGURINHAS<br>COPA 2026</h1>
+  <p class="sub">Normais, douradas, FWC e Coca-Cola — tudo em ótimo estado. Toque no pacotinho e monte seu pedido.</p>
+  <div class="pack-wrap">
+    <div class="pack" id="pack">
+      <div class="pack-face">
+        <div class="p-title">ABRA AQUI</div>
+        <div class="p-sub">Pack oficial</div>
+        <div class="p-num">2026 · Edição única</div>
+      </div>
+      <div class="sticker-fly sf1">★ OURO</div>
+      <div class="sticker-fly sf2">FWC 16</div>
+      <div class="sticker-fly sf3">COCA</div>
+    </div>
+    <div class="pack-hint">toque para abrir</div>
+    <button class="cta-scroll" onclick="document.getElementById('album').scrollIntoView()">Ver o álbum completo ↓</button>
+  </div>
+</section>
+
+<div class="tabs-bar" id="tabsBar">
+  <button class="tab-btn active" data-tab="normais">Normais</button>
+  <button class="tab-btn" data-tab="douradas">⭐ Douradas</button>
+  <button class="tab-btn" data-tab="fwc">🏆 FWC</button>
+  <button class="tab-btn" data-tab="coca">🥤 Coca-Cola</button>
+</div>
+
+<main class="album" id="album">
+  <div id="tab-normais" class="tab-panel">
+    <h2 class="section-title">Figurinhas normais</h2>
+    <div id="normaisList"></div>
+  </div>
+  <div id="tab-douradas" class="tab-panel" style="display:none">
+    <h2 class="section-title">Figurinhas douradas ⭐</h2>
+    <div class="chip-row" id="douradasList" style="justify-content:center"></div>
+  </div>
+  <div id="tab-fwc" class="tab-panel" style="display:none">
+    <h2 class="section-title">Figurinha FWC 🏆</h2>
+    <div class="fwc-block" id="fwcList"></div>
+  </div>
+  <div id="tab-coca" class="tab-panel" style="display:none">
+    <h2 class="section-title">Coca-Cola 🥤</h2>
+    <div class="chip-row" id="cocaList" style="justify-content:center"></div>
+  </div>
+</main>
+
+<footer>Faço pacotes e aceito negociar — quanto mais figurinhas levar, melhor fica o valor. ⚽</footer>
+
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>Seu carrinho</h3>
+    <button class="close-btn" id="closeCartBtn">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody">
+    <div class="cart-empty">Seu carrinho está vazio.<br>Toque nas figurinhas do álbum para adicionar.</div>
+  </div>
+  <div class="drawer-foot">
+    <div class="foot-row"><span>Total de figurinhas</span><b id="totalCount">0</b></div>
+    <a class="whats-btn" id="checkoutBtn" href="#" target="_blank" rel="noopener" style="opacity:.4;pointer-events:none;text-decoration:none;">💬 Falar no WhatsApp</a>
+    <div class="drawer-note">Preço a combinar — quanto mais levar, melhor o valor. Ao finalizar, você será redirecionado ao WhatsApp com sua lista pronta.</div>
+  </div>
+</div>
+
+<script>
+// ---------- DATA ----------
+const NORMAL_DATA = [
+  ['MEX',[5,8,14]],
+  ['RSA',[2,5,20]],
+  ['KOR',[20]],
+  ['BRA',[18]],
+  ['MAR',[10,20]],
+  ['HAI',[7,19]],
+  ['SCO',[7]],
+  ['CUW',[4]],
+  ['CIV',[3,18]],
+  ['BEL',[7]],
+  ['EGY',[[9,2],11,14]],
+  ['SEN',[3,19]],
+  ['COL',[3,10]],
+  ['CAN',[10]],
+  ['SUI',[6]],
+  ['PAR',[12]],
+  ['AUS',[[7,2]]],
+  ['TUR',[7,15]],
+  ['NED',[10]],
+  ['ESP',[11]],
+  ['CPV',[10]],
+  ['KSA',[[5,2],10,17]],
+  ['ARG',[2]],
+  ['ALG',[3]],
+  ['AUT',[9,11,[14,2],16,18]],
+  ['ENG',[18]],
+  ['CRO',[2]],
+  ['PAN',[5,19]],
+];
+const GOLD_DATA = [['BEL',1],['CUW',1],['UZB',1]];
+const FWC_DATA = [['FWC',16]];
+const COCA_DATA = [['BRA','Gabriel Magalhães'],['ARG','Emiliano Martínez']];
+
+const WHATSAPP_NUMBER = '5567999340323';
+
+// cart: { id: {qty, max, code, num, category, label} }
+const cart = {};
+
+function makeId(cat, code, extra){ return cat+'-'+code+'-'+extra; }
+
+function renderNormais(){
+  const wrap = document.getElementById('normaisList');
+  wrap.innerHTML = '';
+  NORMAL_DATA.forEach(([code, nums])=>{
+    const block = document.createElement('div');
+    block.className = 'country-block';
+    block.innerHTML = `<div class="country-head"><span class="country-code">${code}</span><div class="country-line"></div></div>`;
+    const row = document.createElement('div');
+    row.className = 'chip-row';
+    nums.forEach(entry=>{
+      const num = Array.isArray(entry) ? entry[0] : entry;
+      const max = Array.isArray(entry) ? entry[1] : 1;
+      const id = makeId('normal', code, num);
+      row.appendChild(buildChip(id, code, num, max, 'normal', `${code} ${num}`));
+    });
+    block.appendChild(row);
+    wrap.appendChild(block);
+  });
+}
+
+function renderDouradas(){
+  const wrap = document.getElementById('douradasList');
+  wrap.innerHTML = '';
+  GOLD_DATA.forEach(([code, num])=>{
+    const id = makeId('gold', code, num);
+    wrap.appendChild(buildChip(id, code, num, 1, 'gold', `${code} ${num} (dourada)`, true));
+  });
+}
+
+function renderFwc(){
+  const wrap = document.getElementById('fwcList');
+  wrap.innerHTML = '';
+  FWC_DATA.forEach(([code, num])=>{
+    const id = makeId('fwc', code, num);
+    wrap.appendChild(buildChip(id, code, num, 1, 'fwc', `FWC ${num} (dourada)`, true));
+  });
+}
+
+function renderCoca(){
+  const wrap = document.getElementById('cocaList');
+  wrap.innerHTML = '';
+  COCA_DATA.forEach(([code, name])=>{
+    const id = makeId('coca', code, name.replace(/\s+/g,'_'));
+    const chip = document.createElement('div');
+    chip.className = 'chip coca';
+    chip.dataset.id = id;
+    chip.innerHTML = `
+      <div class="coca-icon">🥤</div>
+      <div class="coca-text">
+        <span class="c-code">${code}</span>
+        <span class="c-name">${name}</span>
+      </div>
+      <div class="sel-badge">1</div>`;
+    cart[id] = cart[id] || {qty:0, max:1, label:`Coca-Cola ${code} — ${name}`, category:'Coca-Cola'};
+    chip.addEventListener('click', ()=> toggleCartItem(id, 1, chip));
+    wrap.appendChild(chip);
+  });
+}
+
+function buildChip(id, code, num, max, category, label, isGold){
+  const chip = document.createElement('div');
+  chip.className = 'chip' + (isGold ? ' gold' : '');
+  chip.dataset.id = id;
+  chip.innerHTML = `
+    <span class="c-code">${code}</span>
+    <span class="c-num">${num}</span>
+    ${max > 1 ? `<span class="c-max">até ${max}x</span>` : ''}
+    <div class="sel-badge">1</div>`;
+  cart[id] = cart[id] || {qty:0, max, label, category: categoryLabel(category)};
+  chip.addEventListener('click', ()=> toggleCartItem(id, max, chip));
+  return chip;
+}
+
+function categoryLabel(cat){
+  return {normal:'Normal', gold:'Dourada', fwc:'FWC', coca:'Coca-Cola'}[cat] || cat;
+}
+
+function toggleCartItem(id, max, chipEl){
+  const item = cart[id];
+  item.qty = (item.qty + 1) > max ? 0 : item.qty + 1;
+  syncChipVisual(id);
+  renderCartDrawer();
+}
+
+function syncChipVisual(id){
+  document.querySelectorAll(`[data-id="${CSS.escape(id)}"]`).forEach(chip=>{
+    const item = cart[id];
+    const badge = chip.querySelector('.sel-badge');
+    if(item.qty > 0){
+      chip.classList.add('selected');
+      badge.textContent = item.qty;
+    } else {
+      chip.classList.remove('selected');
+    }
+  });
+}
+
+// ---------- CART DRAWER ----------
+function renderCartDrawer(){
+  const body = document.getElementById('drawerBody');
+  const entries = Object.entries(cart).filter(([_,v])=>v.qty>0);
+  const totalCount = document.getElementById('cartCount');
+  const totalFoot = document.getElementById('totalCount');
+  const checkoutBtn = document.getElementById('checkoutBtn');
+
+  const totalQty = entries.reduce((s,[_,v])=>s+v.qty,0);
+  totalCount.textContent = totalQty;
+  totalFoot.textContent = totalQty;
+  if(totalQty === 0){
+    checkoutBtn.style.opacity = '.4';
+    checkoutBtn.style.pointerEvents = 'none';
+    checkoutBtn.href = '#';
+  } else {
+    checkoutBtn.style.opacity = '1';
+    checkoutBtn.style.pointerEvents = 'auto';
+    checkoutBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsappMessage())}`;
+  }
+
+  if(entries.length === 0){
+    body.innerHTML = '<div class="cart-empty">Seu carrinho está vazio.<br>Toque nas figurinhas do álbum para adicionar.</div>';
+    return;
+  }
+
+  body.innerHTML = '';
+  entries.forEach(([id, item])=>{
+    const row = document.createElement('div');
+    row.className = 'cart-item';
+    row.innerHTML = `
+      <div class="ci-info">
+        <span class="ci-label">${item.label}</span>
+        <span class="ci-tag">${item.category}</span>
+      </div>
+      <div class="ci-controls">
+        <button class="ci-btn" data-act="minus">−</button>
+        <span class="ci-qty">${item.qty}</span>
+        <button class="ci-btn" data-act="plus" ${item.qty>=item.max?'disabled style="opacity:.3"':''}>+</button>
+      </div>`;
+    row.querySelector('[data-act="minus"]').addEventListener('click', ()=>{
+      item.qty = Math.max(0, item.qty - 1);
+      syncChipVisual(id);
+      renderCartDrawer();
+    });
+    row.querySelector('[data-act="plus"]').addEventListener('click', ()=>{
+      item.qty = Math.min(item.max, item.qty + 1);
+      syncChipVisual(id);
+      renderCartDrawer();
+    });
+    body.appendChild(row);
+  });
+}
+
+function buildWhatsappMessage(){
+  const entries = Object.entries(cart).filter(([_,v])=>v.qty>0);
+  let msg = 'Olá! Vi o anúncio das figurinhas da Copa 2026 e quero estas:\n\n';
+  entries.forEach(([_, item])=>{
+    msg += `• ${item.label} (${item.qty}x) — ${item.category}\n`;
+  });
+  msg += '\nPodemos fechar um pacote?';
+  return msg;
+}
+
+// ---------- DRAWER OPEN/CLOSE ----------
+const overlay = document.getElementById('overlay');
+const drawer = document.getElementById('drawer');
+function openDrawer(){ overlay.classList.add('show'); drawer.classList.add('show'); }
+function closeDrawer(){ overlay.classList.remove('show'); drawer.classList.remove('show'); }
+document.getElementById('openCartBtn').addEventListener('click', openDrawer);
+document.getElementById('closeCartBtn').addEventListener('click', closeDrawer);
+overlay.addEventListener('click', closeDrawer);
+
+// ---------- TABS ----------
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p=>p.style.display='none');
+    document.getElementById('tab-'+btn.dataset.tab).style.display='block';
+  });
+});
+
+// ---------- PACK OPEN ----------
+document.getElementById('pack').addEventListener('click', function(){
+  this.classList.add('opened');
+});
+
+// ---------- INIT ----------
+renderNormais();
+renderDouradas();
+renderFwc();
+renderCoca();
+renderCartDrawer();
+</script>
+</body>
+</html>
